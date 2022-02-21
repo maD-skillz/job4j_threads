@@ -4,27 +4,18 @@ public class ConsoleProgress implements Runnable {
 
     @Override
     public void run() {
+        String[] arr = new String[]{"--", "\\", "|",  "/"};
         while (!Thread.currentThread().isInterrupted()) {
             try {
-                for (int i = 0; i < 4; i++) {
+                for (String i : arr) {
+                    System.out.print("\r load: " + i);
                     Thread.sleep(500);
-                    String x = "";
-                    if (i == 0) {
-                       x = "/";
-                    } else if (i == 1) {
-                        x = "|";
-                    } else if (i == 2) {
-                        x = "\\";
-                    } else if (i == 3) {
-                        x = "--";
-                    }
-                    System.out.print("\r load: " + x);
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        }
+    }
 
     public static void main(String[] args) throws InterruptedException {
         Thread thread = new Thread(new ConsoleProgress());
