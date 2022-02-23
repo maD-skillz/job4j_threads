@@ -46,8 +46,6 @@ public class Wget implements Runnable {
     public static void main(String[] args) throws InterruptedException {
         if (args.length != 3) {
             throw new InterruptedException("Arguments must be 3!");
-        } else if (args[0].length() == 0 || args[1].length() == 0 || args[2].length() == 0) {
-            throw new IllegalArgumentException("Arguments is empty!");
         } else {
             String url = args[0];
             int speed = Integer.parseInt(args[1]);
