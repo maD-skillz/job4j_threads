@@ -9,6 +9,7 @@ public class Wget implements Runnable {
     private final String url;
     private final int speed;
     private final String fileName;
+    public static final int TIME_MILLIS = 1000;
 
     public Wget(String url, int speed, String fileName) {
         this.url = url;
@@ -26,16 +27,16 @@ public class Wget implements Runnable {
             long startTime = System.currentTimeMillis();
             while ((bytesRead = in.read(buffer, 0, 1024)) != -1) {
                 fileOutputStream.write(buffer, 0, bytesRead);
-                downloadData = bytesRead;
-                if (downloadData == speed) {
+                downloadData += bytesRead;
+                if (downloadData >= speed) {
                     long afterTime = System.currentTimeMillis();
-                    if ((afterTime - startTime) < 1000) {
-                        Thread.sleep(1000 - (afterTime - startTime));
-                        downloadData = 0;
-                        Thread.currentThread().start();
+                    long downloadTime = afterTime - startTime;
+                    if (downloadTime < TIME_MILLIS) {
+                        Thread.sleep(TIME_MILLIS - downloadTime);
                     }
+                    downloadData = 0;
+                    startTime = System.currentTimeMillis();
                 }
-
             }
         } catch (InterruptedException | IOException e) {
             Thread.currentThread().interrupt();
@@ -43,8 +44,10 @@ public class Wget implements Runnable {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        if (args[0].length() == 0 || args[1].length() == 0 || args[2].length() == 0) {
-            throw new IllegalArgumentException();
+        if (args.length != 3) {
+            throw new InterruptedException("Arguments must be 3!");
+        } else if (args[0].length() == 0 || args[1].length() == 0 || args[2].length() == 0) {
+            throw new IllegalArgumentException("Arguments is empty!");
         } else {
             String url = args[0];
             int speed = Integer.parseInt(args[1]);
