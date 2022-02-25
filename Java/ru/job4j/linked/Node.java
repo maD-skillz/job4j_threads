@@ -1,22 +1,16 @@
 package ru.job4j.linked;
 
-public class Node<T> {
-    private Node<T> next;
-    private T value;
+public final class Node<T> {
 
-    public Node<T> getNext() {
+    private final Node<T> next = null;
+    private final T value = null;
+
+    public final Node<T> getNext() {
         return next;
     }
 
-    public void setNext(Node<T> next) {
-        this.next = new Node<T>().next;
-    }
-
-    public T getValue() {
+    public final T getValue() {
         return value;
     }
 
-    public void setValue(T value) {
-        this.value = new Node<T>().value;
-    }
 }
