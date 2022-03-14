@@ -1,4 +1,4 @@
-package ru.job4j.mavenсount;
+package ru.job4j.count;
 
 import net.jcip.annotations.GuardedBy;
 import net.jcip.annotations.ThreadSafe;
