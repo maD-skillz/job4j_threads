@@ -15,7 +15,7 @@ public final class LoadFile {
         StringBuilder builder = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             int data;
-            while ((data = reader.read()) > 0) {
+            while ((data = reader.read()) != -1) {
                 if (predicate.test((char)data)) {
                     builder.append((char) data);
                 }
