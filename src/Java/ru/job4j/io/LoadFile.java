@@ -12,13 +12,18 @@ public final class LoadFile {
     }
 
     public final synchronized String getContent(Predicate<Character> predicate) {
-        String output = "";
+        StringBuilder builder = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-           output = reader.lines().filter(e -> predicate.test(e.charAt(0))).toString();
+            int data;
+            while ((data = reader.read()) > 0) {
+                if (predicate.test((char)data)) {
+                    builder.append((char) data);
+                }
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return output;
+        return builder.toString();
     }
 
 }

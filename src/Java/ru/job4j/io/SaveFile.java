@@ -11,8 +11,10 @@ public final class SaveFile {
     }
 
     public final synchronized void saveContent(String content) {
-       try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-           writer.write(content.charAt(0));
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+           for (int i = 0; i < content.length(); i += 1) {
+            writer.write(content.charAt(i));
+           }
        } catch (IOException e) {
            e.printStackTrace();
        }
