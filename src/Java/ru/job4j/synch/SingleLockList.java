@@ -18,12 +18,10 @@ public class SingleLockList<T> implements Iterable<T> {
         this.list = copy(list);
     }
 
-    @GuardedBy("list")
     public void add(T value) {
         list.add(value);
     }
 
-    @GuardedBy("list")
     public T get(int index) {
         T res = null;
         for (T i : list) {
@@ -34,14 +32,11 @@ public class SingleLockList<T> implements Iterable<T> {
         return res;
     }
 
-    @Override
-    @GuardedBy("list")
     public synchronized Iterator<T> iterator() {
         return copy(this.list).listIterator();
 
     }
 
-    @GuardedBy("list")
     public synchronized List<T> copy(List<T> list) {
        return new ArrayList<>(list);
     }
