@@ -23,13 +23,7 @@ public class SingleLockList<T> implements Iterable<T> {
     }
 
     public synchronized T get(int index) {
-        T res = null;
-        for (T i : list) {
-            if (i.equals(index)) {
-                res = i;
-            }
-        }
-        return res;
+        return list.get(index);
     }
 
     public synchronized Iterator<T> iterator() {
