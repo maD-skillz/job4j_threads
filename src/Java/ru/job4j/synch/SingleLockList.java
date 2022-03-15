@@ -18,11 +18,11 @@ public class SingleLockList<T> implements Iterable<T> {
         this.list = copy(list);
     }
 
-    public void add(T value) {
+    public synchronized void add(T value) {
         list.add(value);
     }
 
-    public T get(int index) {
+    public synchronized T get(int index) {
         T res = null;
         for (T i : list) {
             if (i.equals(index)) {
