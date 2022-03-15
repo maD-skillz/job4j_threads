@@ -1,8 +1,7 @@
-package ru.job4j.сount;
+package ru.job4j.sount;
 
 
 import org.junit.Test;
-import ru.job4j.count.Count;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
