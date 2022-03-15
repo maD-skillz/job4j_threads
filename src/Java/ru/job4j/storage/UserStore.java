@@ -3,37 +3,40 @@ package ru.job4j.storage;
 import net.jcip.annotations.GuardedBy;
 import net.jcip.annotations.ThreadSafe;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @ThreadSafe
 public class UserStore {
 
-    @GuardedBy("this")
-    private List<User> userList = new ArrayList<>();
+    @GuardedBy("userMap")
+    private Map<Integer, User> userMap = new HashMap<>();
 
-    public synchronized boolean add(User user) {
+    public synchronized boolean add(Integer key, User user) {
         boolean result = false;
-        if (!userList.contains(user)) {
-            result = userList.add(user);
+        if (!userMap.containsKey(key)) {
+            userMap.put(key, user);
+            result = true;
 
         }
         return result;
     }
 
-    public synchronized boolean delete(User user) {
+    public synchronized boolean delete(Integer key, User user) {
         boolean result = false;
-        if (userList.contains(user)) {
-            result = userList.remove(user);
+        if (userMap.containsKey(key)) {
+            userMap.remove(key, user);
+            result = true;
         }
         return result;
     }
 
-    public synchronized boolean update(User user) {
+    public synchronized boolean update(Integer key, User user) {
         boolean result = false;
-        if (userList.contains(user)) {
-            delete(user);
-            result = userList.add(user);
+        if (userMap.containsKey(key)) {
+            delete(key, user);
+            add(key, user);
+            result = true;
         }
         return result;
     }
@@ -42,7 +45,7 @@ public class UserStore {
         boolean validTransfer = false;
         User sender = null;
         User consumer = null;
-        for (User userIndex : userList) {
+        for (User userIndex : userMap.values()) {
             if (userIndex.getId() == fromId) {
                 sender = userIndex;
             }
