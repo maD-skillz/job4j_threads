@@ -14,8 +14,8 @@ public class SimpleBlockingQueue<T> {
 
     private final int maxSize;
 
-    public SimpleBlockingQueue() {
-        maxSize = 5;
+    public SimpleBlockingQueue(int size) {
+        maxSize = size;
     }
 
     public synchronized void offer(T value) throws InterruptedException {

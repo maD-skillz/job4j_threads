@@ -45,7 +45,7 @@ public class SimpleBlockingQueueTest {
     }
 
     public void simpleBlockingQueueTest() {
-        SimpleBlockingQueue sbp = new SimpleBlockingQueue();
+        SimpleBlockingQueue sbp = new SimpleBlockingQueue(5);
         Offer offer = new Offer(sbp);
         Poll poll = new Poll(sbp);
         Thread thread1 = new Thread(offer);
