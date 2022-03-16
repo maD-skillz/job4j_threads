@@ -13,11 +13,7 @@ public class UserStore {
     private Map<Integer, User> userMap = new HashMap<>();
 
     public synchronized User put(Integer key, User value) {
-        User user = userMap.get(key);
-        if (user == null) {
-            user = userMap.put(key, value);
-        }
-        return user;
+        return userMap.get(key) == null ? userMap.put(key, value) : null;
     }
 
     public synchronized boolean delete(Integer key, User value) {
@@ -30,10 +26,7 @@ public class UserStore {
     }
 
     public synchronized User update(Integer key, User value) {
-        if (userMap.containsKey(key)) {
-            return userMap.put(key, value);
-        }
-        return null;
+        return userMap.containsKey(key) ? userMap.put(key, value) : null;
     }
 
     public synchronized boolean transfer(int fromId, int toId, int amount) {
