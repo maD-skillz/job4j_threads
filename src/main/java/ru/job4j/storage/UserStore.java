@@ -17,7 +17,7 @@ public class UserStore {
     }
 
     public synchronized boolean delete(Integer key, User value) {
-        return userMap.containsKey(key) && Objects.equals(userMap.get(key), value) && userMap.remove(key, value);
+        return userMap.remove(key, value);
     }
 
     public synchronized boolean update(Integer key, User value) {
@@ -28,7 +28,7 @@ public class UserStore {
         boolean validTransfer = false;
         User sender = userMap.get(fromId);
         User consumer = userMap.get(toId);
-        if (sender != null && consumer != null && sender.getAmount() != 0) {
+        if (sender != null && consumer != null && sender.getAmount() >= 1 && sender.getAmount() <= amount) {
             sender.setAmount(sender.getAmount() - amount);
             consumer.setAmount(consumer.getAmount() + amount);
             validTransfer = true;
