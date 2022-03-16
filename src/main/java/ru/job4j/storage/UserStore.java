@@ -12,21 +12,16 @@ public class UserStore {
     @GuardedBy("userMap")
     private Map<Integer, User> userMap = new HashMap<>();
 
-    public synchronized User put(Integer key, User value) {
-        return userMap.get(key) == null ? userMap.put(key, value) : null;
+    public synchronized boolean put(Integer key, User value) {
+        return userMap.putIfAbsent(key, value) == null;
     }
 
     public synchronized boolean delete(Integer key, User value) {
-        boolean result = false;
-        if (userMap.containsKey(key) && Objects.equals(userMap.get(key), value)) {
-            userMap.remove(key);
-            result = true;
-        }
-        return result;
+        return userMap.containsKey(key) && Objects.equals(userMap.get(key), value) && userMap.remove(key, value);
     }
 
-    public synchronized User update(Integer key, User value) {
-        return userMap.containsKey(key) ? userMap.put(key, value) : null;
+    public synchronized boolean update(Integer key, User value) {
+        return userMap.replace(key, value) != null;
     }
 
     public synchronized boolean transfer(int fromId, int toId, int amount) {
