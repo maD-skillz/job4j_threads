@@ -4,6 +4,7 @@ import net.jcip.annotations.GuardedBy;
 import net.jcip.annotations.ThreadSafe;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @ThreadSafe
 public class UserStore {
@@ -11,50 +12,37 @@ public class UserStore {
     @GuardedBy("userMap")
     private Map<Integer, User> userMap = new HashMap<>();
 
-    public synchronized boolean add(Integer key, User user) {
-        boolean result = false;
-        if (!userMap.containsKey(key)) {
-            userMap.put(key, user);
-            result = true;
+    public synchronized User put(Integer key, User value) {
+        User user = userMap.get(key);
+        if (user == null) {
+            user = userMap.put(key, value);
+        }
+        return user;
+    }
 
+    public synchronized boolean delete(Integer key, User value) {
+        boolean result = false;
+        if (userMap.containsKey(key) && Objects.equals(userMap.get(key), value)) {
+            userMap.remove(key);
+            result = true;
         }
         return result;
     }
 
-    public synchronized boolean delete(Integer key, User user) {
-        boolean result = false;
+    public synchronized User update(Integer key, User value) {
         if (userMap.containsKey(key)) {
-            userMap.remove(key, user);
-            result = true;
+            return userMap.put(key, value);
         }
-        return result;
-    }
-
-    public synchronized boolean update(Integer key, User user) {
-        boolean result = false;
-        if (userMap.containsKey(key)) {
-            delete(key, user);
-            add(key, user);
-            result = true;
-        }
-        return result;
+        return null;
     }
 
     public synchronized boolean transfer(int fromId, int toId, int amount) {
         boolean validTransfer = false;
-        User sender = null;
-        User consumer = null;
-        for (User userIndex : userMap.values()) {
-            if (userIndex.getId() == fromId) {
-                sender = userIndex;
-            }
-            if (userIndex.getId() == toId) {
-                consumer = userIndex;
-            }
-        }
-        if (sender != null && consumer != null) {
+        User sender = userMap.get(fromId);
+        User consumer = userMap.get(toId);
+        if (sender != null && consumer != null && sender.getAmount() != 0) {
             sender.setAmount(sender.getAmount() - amount);
-            consumer.setAmount(sender.getAmount() + amount);
+            consumer.setAmount(consumer.getAmount() + amount);
             validTransfer = true;
         }
         return validTransfer;
