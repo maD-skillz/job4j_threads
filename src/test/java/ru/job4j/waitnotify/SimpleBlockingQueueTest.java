@@ -2,58 +2,46 @@ package ru.job4j.waitnotify;
 
 import org.junit.Test;
 
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.Arrays;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.IntStream;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
 public class SimpleBlockingQueueTest {
 
-    static class Offer implements Runnable {
-        SimpleBlockingQueue sbq;
-        Offer(SimpleBlockingQueue sbq) {
-            this.sbq = sbq;
-        }
-        @Override
-        public void run() {
-            for (int i = 0; i < 5; i++) {
-                try {
-                    sbq.offer(i);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+    @Test
+    public void test() throws InterruptedException {
+
+        final CopyOnWriteArrayList<Integer> buffer = new CopyOnWriteArrayList<>();
+        final SimpleBlockingQueue<Integer> queue = new SimpleBlockingQueue<>(5);
+
+        Thread producer = new Thread(
+                () -> {
+                    IntStream.range(0, 5).forEach(
+                            queue::offer
+                    );
                 }
-            }
-        }
-    }
-
-    static class Poll implements Runnable {
-        SimpleBlockingQueue sbq;
-        Poll(SimpleBlockingQueue sbq) {
-            this.sbq = sbq;
-        }
-        @Override
-        public void run() {
-            for (int i = 5; i > 0; i--) {
-                try {
-                    sbq.poll();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+        );
+        producer.start();
+        Thread consumer = new Thread(
+                () -> {
+                    while (!queue.isEmpty() || !Thread.currentThread().isInterrupted()) {
+                        try {
+                            buffer.add(queue.poll());
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                            Thread.currentThread().interrupt();
+                        }
+                    }
                 }
-            }
-        }
+        );
+        consumer.start();
+        producer.join();
+        consumer.interrupt();
+        consumer.join();
+        assertThat(buffer, is(Arrays.asList(0, 1, 2, 3, 4)));
     }
-
-    public void simpleBlockingQueueTest() {
-        SimpleBlockingQueue sbp = new SimpleBlockingQueue(5);
-        Offer offer = new Offer(sbp);
-        Poll poll = new Poll(sbp);
-        Thread thread1 = new Thread(offer);
-        Thread thread2 = new Thread(poll);
-        thread1.start();
-        thread2.start();
-
-    }
-
 
 }
