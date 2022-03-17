@@ -28,7 +28,7 @@ public class UserStore {
         boolean validTransfer = false;
         User sender = userMap.get(fromId);
         User consumer = userMap.get(toId);
-        if (sender != null && consumer != null && sender.getAmount() >= 1 && sender.getAmount() <= amount) {
+        if (sender != null && consumer != null && sender.getAmount() >= amount) {
             sender.setAmount(sender.getAmount() - amount);
             consumer.setAmount(consumer.getAmount() + amount);
             validTransfer = true;
