@@ -1,6 +1,6 @@
 package ru.job4j.cache;
 
-import org.junit.Ignore;
+
 import org.junit.Test;
 
 
@@ -23,7 +23,6 @@ public class CacheTest {
         assertThat(cache.getBase(1).getName(), is(expectedBase.getName()));
     }
 
-    @Ignore
     @Test
     public void simpleCacheTest2() {
         Cache cache = new Cache();
