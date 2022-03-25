@@ -9,7 +9,7 @@ import java.util.List;
 
 public class ThreadPool implements Runnable {
 
-    private int currentThreads ;
+    private int currentThreads;
     private  int currentTasks;
     private final List<Thread> threads = new LinkedList<>();
     private final SimpleBlockingQueue<Runnable> tasks = new SimpleBlockingQueue<>(currentTasks);
