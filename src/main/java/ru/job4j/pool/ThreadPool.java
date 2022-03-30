@@ -7,54 +7,40 @@ import java.util.LinkedList;
 import java.util.List;
 
 
-public class ThreadPool implements Runnable {
+public class ThreadPool {
 
-    private int currentThreads;
-    private  int currentTasks;
     private final List<Thread> threads = new LinkedList<>();
-    private final SimpleBlockingQueue<Runnable> tasks = new SimpleBlockingQueue<>(currentTasks);
-    private boolean isStopped = false;
+    private final SimpleBlockingQueue<Runnable> tasks = new SimpleBlockingQueue<>(12);
 
-    public ThreadPool(int currentThreads, int currentTasks) {
-        this.currentThreads = currentThreads;
-        this.currentTasks = currentTasks;
+    public ThreadPool() {
+        for (int i = 0; i < Runtime.getRuntime().availableProcessors(); i++) {
+            System.out.println("add new thread");
+            threads.add(new Thread(() -> {
+                while (!Thread.currentThread().isInterrupted()) {
+                    try {
+                        tasks.poll().run();
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                }
+            }));
+        }
     }
 
+
     public void work(Runnable job) {
-             if (!isStopped) {
-                 for (int i = 0; i < currentThreads; i++) {
-                     System.out.println("Work started");
-                     threads.add(new Thread(job));
-                     tasks.offer(job);
-                 }
-                 for (Thread tr : threads) {
-                     tr.start();
-                     System.out.println(tr.getName() + " thread started");
-                 }
-             }
+        System.out.println("job");
+        tasks.offer(job);
+
     }
 
     public void shutdown() {
-        this.isStopped = true;
         for (Thread tr : threads) {
+            System.out.println("shut");
             tr.interrupt();
-            System.out.println(Thread.currentThread().getName() + " shutdown");
         }
     }
 
-    @Override
-    public void run() {
-        while (!isStopped) {
-            try {
-                System.out.println(Thread.currentThread().getName() + " running");
-                Runnable runnable = tasks.poll();
-                runnable.run();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        isStopped = true;
-        }
-    }
+}
 
 
