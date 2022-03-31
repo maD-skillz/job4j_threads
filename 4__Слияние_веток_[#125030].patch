@@ -1,0 +1,12 @@
+Index: src/deploy.sh
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/deploy.sh b/src/deploy.sh
+new file mode 100644
+--- /dev/null	(date 1648742109731)
++++ b/src/deploy.sh	(date 1648742109731)
+@@ -0,0 +1,1 @@
++#deploy script
+\ No newline at end of file
