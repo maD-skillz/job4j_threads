@@ -25,6 +25,11 @@ public class ThreadPool {
                 }
             }));
         }
+        for (Thread th : threads) {
+            System.out.println("thread start");
+            th.start();
+        }
+
     }
 
 
