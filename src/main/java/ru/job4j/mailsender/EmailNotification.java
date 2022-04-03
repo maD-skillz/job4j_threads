@@ -5,18 +5,16 @@ import java.util.concurrent.Executors;
 
 public class EmailNotification {
 
-    ExecutorService pool = Executors.newFixedThreadPool(
+    private final ExecutorService pool = Executors.newFixedThreadPool(
             Runtime.getRuntime().availableProcessors());
 
 
     public void emailTo(User user) throws InterruptedException {
-       pool.submit(new Runnable() {
-           @Override
-           public void run() {
+       pool.submit(() -> {
                 if (user.getEmail() != null) {
                     send(
                             new StringBuilder()
-                                    .append("Notification ")
+                                    .append("Notification for ")
                                     .append(user.getName())
                                     .append(" to email ")
                                     .append(user.getEmail()).toString(),
@@ -26,7 +24,6 @@ public class EmailNotification {
                             user.getEmail()
                             );
                 }
-           }
        });
        close();
     }
