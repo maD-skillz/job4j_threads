@@ -25,7 +25,6 @@ public class EmailNotification {
                             );
                 }
        });
-       close();
     }
 
     public void send(String subject, String body, String email) {
