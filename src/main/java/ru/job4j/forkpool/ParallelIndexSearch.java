@@ -7,48 +7,46 @@ public class ParallelIndexSearch extends RecursiveTask<Integer> {
 
     private final int[] array;
 
-    private final int from;
+    private final int start;
 
-    private final   int to;
+    private final  int end;
 
-    private final int indexToSearch;
+    private final int element;
 
 
-    public ParallelIndexSearch(int[] array, int from, int to, int indexToSearch) {
+    public ParallelIndexSearch(int[] array, int start, int end, int element) {
         this.array = array;
-        this.from = from;
-        this.to = to;
-        this.indexToSearch = indexToSearch;
+        this.start = start;
+        this.end = end;
+        this.element = element;
     }
 
-    public Integer findIndex(int[] array, int indexToSearch) {
-        for (int i = 0; i < array.length; i++) {
-                if (array[i] == indexToSearch) {
-                    return array[i];
-                }
-
-        }
-        return -1;
-    }
-
-    @Override
-    protected Integer compute() {
+    public Integer findIndex(int[] array, Integer element) {
         int result = -1;
-        for (int i = from; i < to; i++) {
-            if (array[i] == indexToSearch) {
+        for (int i = 0; i < array.length; i++) {
+            if (element.equals(array[i])) {
                 result = array[i];
             }
         }
         return result;
     }
 
-    public Integer search(int[] array) {
-        if (array.length <= 10) {
-            return findIndex(array, indexToSearch);
-        } else {
+    @Override
+    protected Integer compute() {
+        if ((end - start) <= 10) {
+            return findIndex(array, element);
+        }
+        int mid = (start + end) / 2;
+        ParallelIndexSearch left = new ParallelIndexSearch(array, start, mid, element);
+        ParallelIndexSearch right = new ParallelIndexSearch(array, mid + 1, end, element);
+        left.fork();
+        right.fork();
+        return Math.max(left.join(), right.join());
+    }
+
+    public static Integer search(int[] array, int element) {
             ForkJoinPool forkJoinPool = new ForkJoinPool();
             return forkJoinPool.invoke(
-                    new ParallelIndexSearch(array, 0, array.length, indexToSearch));
+                    new ParallelIndexSearch(array, 0, array.length, element));
         }
     }
-}
