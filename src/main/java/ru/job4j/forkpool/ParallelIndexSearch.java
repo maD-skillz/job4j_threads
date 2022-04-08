@@ -1,40 +1,40 @@
 package ru.job4j.forkpool;
 
+
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
 
 public class ParallelIndexSearch extends RecursiveTask<Integer> {
 
-    private final int[] array;
+    private final Integer[] array;
 
     private final int start;
 
-    private final  int end;
+    private final int end;
 
-    private final int element;
+    private final Integer element;
 
 
-    public ParallelIndexSearch(int[] array, int start, int end, int element) {
+    public ParallelIndexSearch(Integer[] array, int start, int end, int element) {
         this.array = array;
         this.start = start;
         this.end = end;
         this.element = element;
     }
 
-    public Integer findIndex(int[] array, Integer element) {
-        int result = -1;
-        for (int i = 0; i < array.length; i++) {
+    public Integer findIndex() {
+        for (int i = start; i < end; i++) {
             if (element.equals(array[i])) {
-                result = array[i];
+                return array[i];
             }
         }
-        return result;
+        return -1;
     }
 
     @Override
     protected Integer compute() {
         if ((end - start) <= 10) {
-            return findIndex(array, element);
+            return findIndex();
         }
         int mid = (start + end) / 2;
         ParallelIndexSearch left = new ParallelIndexSearch(array, start, mid, element);
@@ -44,9 +44,9 @@ public class ParallelIndexSearch extends RecursiveTask<Integer> {
         return Math.max(left.join(), right.join());
     }
 
-    public static Integer search(int[] array, int element) {
-            ForkJoinPool forkJoinPool = new ForkJoinPool();
-            return forkJoinPool.invoke(
-                    new ParallelIndexSearch(array, 0, array.length, element));
-        }
+    public static Integer search(Integer[] array, Integer element) {
+        ForkJoinPool forkJoinPool = new ForkJoinPool();
+        return forkJoinPool.invoke(
+                new ParallelIndexSearch(array, 0, array.length, element));
     }
+}
