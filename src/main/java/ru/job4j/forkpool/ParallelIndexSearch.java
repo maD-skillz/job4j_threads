@@ -12,10 +12,10 @@ public class ParallelIndexSearch<T> extends RecursiveTask<Integer> {
 
     private final int end;
 
-    private final Integer element;
+    private final T element;
 
 
-    public ParallelIndexSearch(T[] array, int start, int end, Integer element) {
+    public ParallelIndexSearch(T[] array, int start, int end, T element) {
         this.array = array;
         this.start = start;
         this.end = end;
@@ -23,13 +23,12 @@ public class ParallelIndexSearch<T> extends RecursiveTask<Integer> {
     }
 
     public Integer findIndex() {
-        Integer result = -1;
-        for (int i = start; i < end; i++) {
+        for (int i = start; i <= end; i++) {
             if (element.equals(array[i])) {
-                result = i;
+                return i;
             }
         }
-        return result;
+        return -1;
     }
 
     @Override
@@ -48,6 +47,7 @@ public class ParallelIndexSearch<T> extends RecursiveTask<Integer> {
     public static Integer search(Integer[] array, Integer element) {
         ForkJoinPool forkJoinPool = new ForkJoinPool();
         return forkJoinPool.invoke(
-                new ParallelIndexSearch<>(array, 0, array.length, element));
+                new ParallelIndexSearch<>(array, 0, array.length - 1, element));
     }
+
 }
