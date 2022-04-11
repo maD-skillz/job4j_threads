@@ -1,11 +1,14 @@
 package ru.job4j.waitnotify;
 import org.junit.Test;
+
 import java.util.Arrays;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.IntStream;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 public class SimpleBlockingQueueTest {
+
 
     @Test
     public void test() throws InterruptedException {
